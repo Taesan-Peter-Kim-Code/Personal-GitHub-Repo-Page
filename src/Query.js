@@ -1,19 +1,42 @@
-const githubQuery = {
-    query: `
-    {
+const githubQuery = (
+    pageCount,
+    queryString,
+    paginationKeyword,
+    paginationString
+  ) => {
+    return {
+      query: `
+      {
         viewer {
-            name
-            repositories(first: 10) {
-            nodes {
+          name
+        }
+        search(query: "${queryString} user:Taesan-Peter-Kim-Code sort:updated-desc", type: REPOSITORY, ${paginationKeyword}: ${pageCount}, ${paginationString}) {
+          repositoryCount
+          edges {
+            cursor
+            node {
+              ... on Repository {
                 name
                 description
                 id
                 url
+                viewerSubscription
+                licenseInfo {
+                  spdxId
                 }
+              }
             }
+          }
+          pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+          }
         }
-    }
-`,
-};
+      }
+    `,
+    };
+  };
 
 export default githubQuery;
